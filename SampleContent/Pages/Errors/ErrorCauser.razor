@@ -1,0 +1,12 @@
+<p>
+    <button @onclick="ThrowException">@Text</button>
+</p>
+
+@code {
+    [Parameter] public string? Text { get; set; }
+
+    private void ThrowException()
+    {
+        throw new InvalidTimeZoneException("This is an exception for test purposes.");
+    }
+}

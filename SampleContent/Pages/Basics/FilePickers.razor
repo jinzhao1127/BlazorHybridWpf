@@ -1,0 +1,46 @@
+<h2>File picker</h2>
+
+<InputFile multiple OnChange="@ShowValue" />
+
+@if (currentEventArgs is not null)
+{
+    <p>You selected @currentEventArgs.FileCount file(s):</p>
+    <ol>
+        @foreach (var file in currentEventArgs.GetMultipleFiles(currentEventArgs.FileCount))
+        {
+            <li>
+                <strong>@file.Name</strong> (@file.Size bytes, type @file.ContentType)
+
+                @if (file.ContentType?.StartsWith("image/") == true)
+                {
+                    <button @onclick="@(() => ShowImage(file))">Show image</button>
+                }
+            </li>
+        }
+    </ol>
+}
+
+@if (imageFileBytes is not null)
+{
+    <!-- Note: this base64 technique is convenient for testing, but should not be used for real apps -->
+    <img src="data:image/jpeg;base64,@Convert.ToBase64String(imageFileBytes)" />
+}
+
+@code {
+    InputFileChangeEventArgs? currentEventArgs;
+    byte[]? imageFileBytes;
+
+    private void ShowValue(InputFileChangeEventArgs eventArgs)
+    {
+        currentEventArgs = eventArgs;
+    }
+
+    private async Task ShowImage(IBrowserFile file)
+    {
+        var imageFile = await file.RequestImageFileAsync("image/jpeg", 300, 300);
+        using var imageFileStream = imageFile.OpenReadStream(long.MaxValue);
+        using var imageFileMemoryStream = new MemoryStream();
+        await imageFileStream.CopyToAsync(imageFileMemoryStream);
+        imageFileBytes = imageFileMemoryStream.GetBuffer();
+    }
+}

@@ -1,0 +1,17 @@
+﻿@page "/navigation"
+@inject NavigationManager NavMan
+
+<PageTitle>Navigation</PageTitle>
+
+<h2>Navigation</h2>
+
+<p>
+    Programmatic navigation:
+    <button @onclick="@(() => NavMan.NavigateTo(""))">Go to basics page</button>
+</p>
+
+<p>
+    Go to external content:
+    <a href="https://microsoft.com">via link</a>
+    <button @onclick="@(() => NavMan.NavigateTo("https://microsoft.com"))">via programmatic navigation</button>
+</p>
